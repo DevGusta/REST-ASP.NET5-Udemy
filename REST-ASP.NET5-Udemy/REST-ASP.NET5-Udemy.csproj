@@ -5,4 +5,12 @@
     <RootNamespace>REST_ASP.NET5_Udemy</RootNamespace>
   </PropertyGroup>
 
+  <ItemGroup>
+    <Folder Include="Model\Script\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="3.2.4" />
+  </ItemGroup>
+
 </Project>
