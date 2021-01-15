@@ -1,4 +1,5 @@
 ﻿using REST_ASP.NET5_Udemy.Model;
+using REST_ASP.NET5_Udemy.Model.Context;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,63 +10,89 @@ namespace REST_ASP.NET5_Udemy.Services.Implementations
 {
     public class PersonServiceImplementation : IPersonService
     {
-        private volatile int count;
+        private MySQLContext _context;
 
+        public PersonServiceImplementation(MySQLContext context)
+        {
+            _context = context;
+        }
+        
+        public List<Person> ListaPessoas()
+        {
+            return _context.Pessoas.ToList();
+        }
+        
         public Person AcharId(long id)
         {
-            return new Person
-            {
-                Id = IncrementAndGet(),
-                PrimeiroNome = "Gustavo",
-                Sobrenome = "Nascimento",
-                Endereco = "São Paulo-SP",
-                Genero = "Masculino"
-            };
-        }
-
-        public Person Atualizar(Person pessoa)
-        {
-
-            return pessoa;
+            return _context.Pessoas.SingleOrDefault(p => p.Id.Equals(id));
         }
 
         public Person Criar(Person pessoa)
         {
+            try
+            {
+                _context.Add(pessoa);
+                _context.SaveChanges();
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+            return pessoa;        
+        }
+
+        public Person Atualizar(Person pessoa)
+        {
+            if (!Existe(pessoa.Id)) return new Person();   
+            
+            var resultado = _context.Pessoas.SingleOrDefault(p => p.Id.Equals(pessoa.Id));
+
+            if (resultado != null)
+            {
+                try
+                {
+                    _context.Entry(resultado).CurrentValues.SetValues(pessoa);
+                    _context.SaveChanges();
+                }
+                catch (Exception)
+                {
+
+                    throw;
+                }
+            }
+
+            
             return pessoa;
         }
-
+        
         public void Deletar(long id)
         {
-            
-        }
+            var resultado = _context.Pessoas.SingleOrDefault(p => p.Id.Equals(id));
 
-        public List<Person> ListaPessoas()
-        {
-            List<Person> pessoas = new List<Person>();
-            for(int i = 0; i < 8; i++) 
+            if (resultado != null)
             {
-                Person pessoa = MockPessoa(i);
-                pessoas.Add(pessoa);
+                try
+                {
+                    _context.Pessoas.Remove(resultado);
+                    _context.SaveChanges();
+                }
+                catch (Exception)
+                {
+
+                    throw;
+                }
             }
-   
-            return pessoas;
+
+
+        }
+        private bool Existe(long id)
+        {
+            return _context.Pessoas.Any(p => p.Id.Equals(id));
         }
 
-        private Person MockPessoa(int i)
-        {
-            return new Person
-            {
-                Id = IncrementAndGet() ,
-                PrimeiroNome = "Nome da Pessoa" + i,
-                Sobrenome = "Sobrenome da Pessoa" + i,
-                Endereco = "Endereço da Pessoa" + i,
-                Genero = "Masculino"
-            };
-        }
+        
 
-        private long IncrementAndGet()
-        {
-            return Interlocked.Increment(ref count) ;
-        }
+        
     }
 }

@@ -32,8 +32,8 @@ namespace REST_ASP.NET5_Udemy
 
             services.AddControllers();
 
-            var conexao = Configuration["MySQLConnection : MySQLConnectionString"];
-            services.AddDbContext<MySQLContext>(options => options.UseMySql(conexao))
+            var conexao = Configuration["MySQLConnection:MySQLConnectionString"];
+            services.AddDbContext<MySQLContext>(options => options.UseMySql(conexao));
 
             //Injeção de dependência.
             services.AddScoped<IPersonService, PersonServiceImplementation>();
