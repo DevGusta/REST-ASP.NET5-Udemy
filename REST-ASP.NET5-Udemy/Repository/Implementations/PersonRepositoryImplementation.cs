@@ -6,13 +6,13 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace REST_ASP.NET5_Udemy.Services.Implementations
+namespace REST_ASP.NET5_Udemy.Repository.Implementations
 {
-    public class PersonServiceImplementation : IPersonService
-    {
+    public class PersonRepositoryImplementation : IPersonRepository
+    { 
         private MySQLContext _context;
 
-        public PersonServiceImplementation(MySQLContext context)
+        public PersonRepositoryImplementation(MySQLContext context)
         {
             _context = context;
         }
@@ -86,13 +86,9 @@ namespace REST_ASP.NET5_Udemy.Services.Implementations
 
 
         }
-        private bool Existe(long id)
+        public bool Existe(long id)
         {
             return _context.Pessoas.Any(p => p.Id.Equals(id));
-        }
-
-        
-
-        
+        }        
     }
 }

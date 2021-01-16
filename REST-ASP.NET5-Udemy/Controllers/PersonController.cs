@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using REST_ASP.NET5_Udemy.Model;
-using REST_ASP.NET5_Udemy.Services;
+using REST_ASP.NET5_Udemy.Business;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,24 +16,24 @@ namespace REST_ASP.NET5_Udemy.Controllers
     {
 
         private readonly ILogger<PersonController> _logger;
-        private IPersonService _personService;
-        public PersonController(ILogger<PersonController> logger, IPersonService personService)
+        private IPersonBusiness _personBusiness;
+        public PersonController(ILogger<PersonController> logger, IPersonBusiness personBusiness)
         {
             _logger = logger;
-            _personService = personService;
+            _personBusiness = personBusiness;
         }
 
         [HttpGet]
         public IActionResult Get()
         {
 
-            return Ok(_personService.ListaPessoas());
+            return Ok(_personBusiness.ListaPessoas());
         }
 
         [HttpGet("{id}")]
         public IActionResult Get(long id)
         {
-            var pessoa = _personService.AcharId(id);
+            var pessoa = _personBusiness.AcharId(id);
             if (pessoa == null) return NotFound();
             return Ok(pessoa);
         }
@@ -42,20 +42,20 @@ namespace REST_ASP.NET5_Udemy.Controllers
         public IActionResult Post([FromBody] Person pessoa)
         {
             if (pessoa == null) return BadRequest();
-            return Ok(_personService.Criar(pessoa));
+            return Ok(_personBusiness.Criar(pessoa));
         }
         
         [HttpPut]
         public IActionResult Put([FromBody] Person pessoa)
         {
             if (pessoa == null) return BadRequest();
-            return Ok(_personService.Atualizar(pessoa));
+            return Ok(_personBusiness.Atualizar(pessoa));
         }
 
         [HttpDelete("{id}")]
         public IActionResult Delete(long id)
         {
-            _personService.Deletar(id);
+            _personBusiness.Deletar(id);
           
             return NoContent();
         }
