@@ -1,5 +1,6 @@
 ﻿using REST_ASP.NET5_Udemy.Model;
 using REST_ASP.NET5_Udemy.Model.Context;
+using REST_ASP.NET5_Udemy.Repository;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,89 +11,37 @@ namespace REST_ASP.NET5_Udemy.Business.Implementations
 {
     public class PersonBusinessImplementation : IPersonBusiness
     {
-        private MySQLContext _context;
+        private readonly IPersonRepository _repository;
 
-        public PersonBusinessImplementation(MySQLContext context)
+        public PersonBusinessImplementation(IPersonRepository repository)
         {
-            _context = context;
+            _repository = repository;
         }
         
         public List<Person> ListaPessoas()
         {
-            return _context.Pessoas.ToList();
+            return _repository.ListaPessoas();
         }
         
         public Person AcharId(long id)
         {
-            return _context.Pessoas.SingleOrDefault(p => p.Id.Equals(id));
+            return _repository.AcharId(id);
         }
 
         public Person Criar(Person pessoa)
         {
-            try
-            {
-                _context.Add(pessoa);
-                _context.SaveChanges();
-            }
-            catch (Exception)
-            {
-
-                throw;
-            }
-            return pessoa;        
+            
+            return _repository.Criar(pessoa);        
         }
 
         public Person Atualizar(Person pessoa)
         {
-            if (!Existe(pessoa.Id)) return new Person();   
-            
-            var resultado = _context.Pessoas.SingleOrDefault(p => p.Id.Equals(pessoa.Id));
-
-            if (resultado != null)
-            {
-                try
-                {
-                    _context.Entry(resultado).CurrentValues.SetValues(pessoa);
-                    _context.SaveChanges();
-                }
-                catch (Exception)
-                {
-
-                    throw;
-                }
-            }
-
-            
-            return pessoa;
+            return _repository.Atualizar(pessoa);
         }
         
         public void Deletar(long id)
         {
-            var resultado = _context.Pessoas.SingleOrDefault(p => p.Id.Equals(id));
-
-            if (resultado != null)
-            {
-                try
-                {
-                    _context.Pessoas.Remove(resultado);
-                    _context.SaveChanges();
-                }
-                catch (Exception)
-                {
-
-                    throw;
-                }
-            }
-
-
-        }
-        private bool Existe(long id)
-        {
-            return _context.Pessoas.Any(p => p.Id.Equals(id));
-        }
-
-        
-
-        
+            _repository.Deletar(id);
+        }     
     }
 }

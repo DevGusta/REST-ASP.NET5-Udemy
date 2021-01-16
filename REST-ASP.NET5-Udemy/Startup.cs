@@ -14,6 +14,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using REST_ASP.NET5_Udemy.Repository;
+using REST_ASP.NET5_Udemy.Repository.Implementations;
 
 namespace REST_ASP.NET5_Udemy
 {
@@ -38,7 +40,8 @@ namespace REST_ASP.NET5_Udemy
             services.AddApiVersioning();
 
             //Injeção de dependência.
-            services.AddScoped<IPersonService, PersonServiceImplementation>();
+            services.AddScoped<IPersonBusiness, PersonBusinessImplementation>();
+            services.AddScoped<IPersonRepository, PersonRepositoryImplementation>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
